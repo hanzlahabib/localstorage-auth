@@ -4,8 +4,19 @@
 /* eslint-disable import/prefer-default-export */
 import { userService } from '../services';
 
+const mockedUsers = [
+  {
+    id: '1',
+    fName: 'hanzla',
+    lName: 'habib',
+    email: 'admin@hanzla.com',
+    username: 'hanzla',
+    password: '123456',
+  },
+];
 const state = {
   all: {},
+  mockedUsers,
 };
 
 const actions = {

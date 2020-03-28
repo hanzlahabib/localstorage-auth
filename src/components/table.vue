@@ -1,112 +1,154 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-mixed-operators */
+/* eslint-disable no-alert */
+/* eslint-disable no-restricted-globals */
+/* eslint-disable */
 <template>
   <v-data-table
     :headers="headers"
-    :items="desserts"
-    :items-per-page="5"
+    :items="users"
+    sort-by="calories"
     class="elevation-1"
-  ></v-data-table>
+  >
+    <template v-slot:top>
+      <Vdialog
+      :close="close"
+      :editedItem="editedItem"
+      :formTitle="formTitle"
+      :dialog="dialog"
+      :save="save"
+      :type="type"
+      :_delete="Udelete"
+      >
+      </Vdialog>
+    </template>
+    <template v-slot:item.actions="{ item }">
+      <a
+        class="mr-2"
+        @click="editItem(item)"
+      >
+        Edit
+      </a>
+      <a
+        @click="deleteItem(item)"
+      >
+       Delete
+      </a>
+      <v-icon>mdi-view-dashboard</v-icon>
+    </template>
+    <template v-slot:no-data>
+      <v-btn color="primary" @click="initialize">Reset</v-btn>
+    </template>
+  </v-data-table>
 </template>
 <script>
+import Vdialog from './dialog.vue';
+
 export default {
-  name: 'table',
-  data() {
-    return {
-      headers: [
-        {
-          text: 'Dessert (100g serving)',
-          align: 'start',
-          sortable: false,
-          value: 'name',
-        },
-        { text: 'Calories', value: 'calories' },
-        { text: 'Fat (g)', value: 'fat' },
-        { text: 'Carbs (g)', value: 'carbs' },
-        { text: 'Protein (g)', value: 'protein' },
-        { text: 'Iron (%)', value: 'iron' },
-      ],
-      desserts: [
-        {
-          name: 'Frozen Yogurt',
-          calories: 159,
-          fat: 6.0,
-          carbs: 24,
-          protein: 4.0,
-          iron: '1%',
-        },
-        {
-          name: 'Ice cream sandwich',
-          calories: 237,
-          fat: 9.0,
-          carbs: 37,
-          protein: 4.3,
-          iron: '1%',
-        },
-        {
-          name: 'Eclair',
-          calories: 262,
-          fat: 16.0,
-          carbs: 23,
-          protein: 6.0,
-          iron: '7%',
-        },
-        {
-          name: 'Cupcake',
-          calories: 305,
-          fat: 3.7,
-          carbs: 67,
-          protein: 4.3,
-          iron: '8%',
-        },
-        {
-          name: 'Gingerbread',
-          calories: 356,
-          fat: 16.0,
-          carbs: 49,
-          protein: 3.9,
-          iron: '16%',
-        },
-        {
-          name: 'Jelly bean',
-          calories: 375,
-          fat: 0.0,
-          carbs: 94,
-          protein: 0.0,
-          iron: '0%',
-        },
-        {
-          name: 'Lollipop',
-          calories: 392,
-          fat: 0.2,
-          carbs: 98,
-          protein: 0,
-          iron: '2%',
-        },
-        {
-          name: 'Honeycomb',
-          calories: 408,
-          fat: 3.2,
-          carbs: 87,
-          protein: 6.5,
-          iron: '45%',
-        },
-        {
-          name: 'Donut',
-          calories: 452,
-          fat: 25.0,
-          carbs: 51,
-          protein: 4.9,
-          iron: '22%',
-        },
-        {
-          name: 'KitKat',
-          calories: 518,
-          fat: 26.0,
-          carbs: 65,
-          protein: 7,
-          iron: '6%',
-        },
-      ],
-    };
+  data: () => ({
+    dialog: false,
+    type: null,
+    delIndex: null,
+    // eslint-disable-next-line no-undef
+    headers: [
+      { text: 'First Name', value: 'fName' },
+      { text: 'Last Name', value: 'lName' },
+      { text: 'Username', value: 'username' },
+      { text: 'Email', value: 'email' },
+      { text: 'Password', value: 'password' },
+      { text: 'Actions', value: 'actions', sort: false },
+    ],
+    users: [],
+    editedIndex: -1,
+    editedItem: {
+      fName: '',
+      lName: '',
+      email: '',
+      username: '',
+      password: '',
+    },
+    defaultItem: {
+      fName: '',
+      lName: '',
+      email: '',
+      username: '',
+      password: '',
+    },
+  }),
+  props: [
+    'events',
+  ],
+  components: {
+    Vdialog,
+  },
+  computed: {
+    formTitle() {
+      return this.editedIndex === -1 ? 'New Item' : 'Edit Item';
+    },
+  },
+
+  watch: {
+    dialog(val) {
+      return val || this.close();
+    },
+  },
+
+  created() {
+    this.initialize();
+  },
+
+  mounted() {
+    this.events.$on('newUser', this.newUser);
+    console.log(this.$store.state);
+  },
+  methods: {
+    initialize() {
+      this.users = this.$store.state.users.mockedUsers;
+    },
+
+    editItem(item) {
+      this.editedIndex = this.users.indexOf(item);
+      this.editedItem = { ...item };
+      this.dialog = true;
+      this.type = 'edit';
+    },
+
+    deleteItem(item) {
+      const index = this.users.indexOf(item);
+      this.dialog = true;
+      this.type = 'confirm';
+      this.delIndex = index;
+    },
+
+    close() {
+      this.dialog = false;
+      this.type = null;
+      setTimeout(() => {
+        this.editedItem = { ...this.defaultItem };
+        this.editedIndex = -1;
+      }, 300);
+    },
+
+    save() {
+      if (this.editedIndex > -1) {
+        Object.assign(this.users[this.editedIndex], this.editedItem);
+      } else {
+        const id = `_${Math.random().toString(36).substr(2, 9)}`;
+        this.editedItem.id = id;
+        this.users.push(this.editedItem);
+      }
+      this.close();
+    },
+    Udelete() {
+      this.users.splice(this.delIndex, 1);
+      this.type = null;
+      this.dialog = false;
+    },
+    newUser() {
+      this.type = 'create';
+      this.dialog = true;
+      console.log('test in child');
+    },
   },
 };
 </script>
