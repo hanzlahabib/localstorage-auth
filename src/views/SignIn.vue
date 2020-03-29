@@ -24,12 +24,13 @@
                 <v-spacer />
               </v-toolbar>
               <v-card-text>
-                <v-form>
+                <v-form @submit.prevent="submit" id="login-form">
                   <v-text-field
                     label="Login"
                     name="login"
                     prepend-icon="person"
                     type="text"
+                    v-model="user.email"
                   />
 
                   <v-text-field
@@ -38,12 +39,13 @@
                     name="password"
                     prepend-icon="lock"
                     type="password"
+                    v-model="user.password"
                   />
                 </v-form>
               </v-card-text>
               <v-card-actions>
                 <v-spacer />
-                <v-btn color="primary">Login</v-btn>
+                <v-btn type="submit" form="login-form" color="primary">Login</v-btn>
               </v-card-actions>
             </v-card>
           </v-col>
@@ -55,8 +57,25 @@
 
 <script>
 export default {
+  data: () => ({
+    user: {
+      email: '',
+      password: '',
+    },
+  }),
   props: {
     source: String,
+  },
+  methods: {
+    submit() {
+      this.$store.dispatch('users/login', this.user);
+    },
+  },
+  created() {
+    this.users = window.localStorage.getItem('users') || null;
+    if (this.users === null) {
+      window.localStorage.setItem('users', JSON.stringify(this.$store.state.users.mockedUsers));
+    }
   },
 };
 </script>

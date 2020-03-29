@@ -4,6 +4,9 @@ import App from './App.vue';
 import './registerServiceWorker';
 import router from './router';
 import store from './store';
+import { configureFakeBackend } from './helpers';
+
+configureFakeBackend();
 
 export default new Vuetify({
   icons: {
@@ -21,9 +24,6 @@ export default new Vuetify({
     },
   },
 });
-
-// export default new Vuetify({ });
-
 Vue.use(Vuetify);
 
 Vue.config.productionTip = false;

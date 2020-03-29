@@ -3,6 +3,7 @@
 /* eslint-disable import/named */
 /* eslint-disable import/prefer-default-export */
 import { userService } from '../services';
+import router from '../router';
 
 const mockedUsers = [
   {
@@ -38,6 +39,15 @@ const actions = {
         (user) => commit('deleteSuccess', id),
         (error) => commit('deleteFailure', { id, error: error.toString() }),
       );
+  },
+  login(context, payload) {
+    userService.login(payload.email, payload.password)
+      .then((e) => router.push('/'))
+      .catch((err) => console.log(err));
+  },
+  logout(context, payload) {
+    userService.logout();
+    router.push('/sign-in');
   },
 };
 

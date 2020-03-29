@@ -15,12 +15,12 @@ export function configureFakeBackend() {
       setTimeout(() => {
         // authenticate
         if (url.endsWith('/users/authenticate') && opts.method === 'POST') {
+          console.log('test', opts.body, users);
           // get parameters from post request
           const params = JSON.parse(opts.body);
 
           // find if any user matches login credentials
-          const filteredUsers = users.filter((user) => user.username === params.username && user.password === params.password);
-
+          const filteredUsers = users.filter((user) => user.email === params.username && user.password === params.password);
           if (filteredUsers.length) {
             // if login details are valid return user details and fake jwt token
             const user = filteredUsers[0];

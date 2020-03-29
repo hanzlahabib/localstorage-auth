@@ -23,12 +23,20 @@
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title>Admin Dashbaord</v-toolbar-title>
               <v-spacer></v-spacer>
-          <v-btn
+      <v-btn
       color="primary"
       dark
       @click.stop="newUser"
     >
       Create New User
+    </v-btn>
+    <v-btn
+      color="red"
+      class="ml-5"
+      dark
+      @click.stop="logout"
+    >
+      Logout
     </v-btn>
     </v-app-bar>
 
@@ -48,6 +56,7 @@
 
 <script>
 import Vue from 'vue';
+import { mapActions } from 'vuex';
 import vtable from '../components/table.vue';
 
 export default {
@@ -70,6 +79,7 @@ export default {
     newUser() {
       this.events.$emit('newUser');
     },
+    ...mapActions('users', ['logout']),
   },
 };
 </script>
