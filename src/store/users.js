@@ -5,16 +5,14 @@
 import { userService } from '../services';
 import router from '../router';
 
-const mockedUsers = [
-  {
-    id: '1',
-    fName: 'hanzla',
-    lName: 'habib',
-    email: 'admin@hanzla.com',
-    username: 'hanzla',
-    password: '123456',
-  },
-];
+
+const mockedUsers = JSON.parse(window.localStorage.getItem('users')) || null;
+if (mockedUsers === null) {
+  window.localStorage.setItem('users', JSON.stringify([]));
+} else {
+  window.localStorage.setItem('users', JSON.stringify(mockedUsers));
+}
+
 const state = {
   all: {},
   mockedUsers,
@@ -83,6 +81,18 @@ const mutations = {
 
       return user;
     });
+  },
+  addUserInLS(state, users) {
+    window.localStorage.setItem('users', JSON.stringify(users));
+  },
+  signUp(state, { user, store }) {
+    userService.register(user)
+      .then((e) => {
+        state.mockedUsers = JSON.parse(window.localStorage.getItem('users'));
+        // console.log(state);
+        router.push('/');
+      })
+      .catch((err) => console.log(err));
   },
 };
 

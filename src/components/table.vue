@@ -99,7 +99,6 @@ export default {
 
   mounted() {
     this.events.$on('newUser', this.newUser);
-    console.log(this.$store.state);
   },
   methods: {
     initialize() {
@@ -137,17 +136,18 @@ export default {
         this.editedItem.id = id;
         this.users.push(this.editedItem);
       }
+      this.$store.commit('users/addUserInLS', this.users);
       this.close();
     },
     Udelete() {
       this.users.splice(this.delIndex, 1);
+      this.$store.commit('users/addUserInLS', this.users);
       this.type = null;
       this.dialog = false;
     },
     newUser() {
       this.type = 'create';
       this.dialog = true;
-      console.log('test in child');
     },
   },
 };

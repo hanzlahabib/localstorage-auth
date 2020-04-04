@@ -46,6 +46,7 @@
               <v-card-actions>
                 <v-spacer />
                 <v-btn type="submit" form="login-form" color="primary">Login</v-btn>
+                <v-btn to="/sign-up" color="secondary">Sign Up</v-btn>
               </v-card-actions>
             </v-card>
           </v-col>
@@ -70,12 +71,6 @@ export default {
     submit() {
       this.$store.dispatch('users/login', this.user);
     },
-  },
-  created() {
-    this.users = window.localStorage.getItem('users') || null;
-    if (this.users === null) {
-      window.localStorage.setItem('users', JSON.stringify(this.$store.state.users.mockedUsers));
-    }
   },
 };
 </script>

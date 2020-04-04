@@ -31,4 +31,7 @@ export default {
     }
   }
 }
+.required label::after {
+    content: "*";
+}
 </style>

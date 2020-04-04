@@ -20,16 +20,39 @@
                 dark
                 flat
               >
-                <v-toolbar-title>Login form</v-toolbar-title>
+                <v-toolbar-title>Sign up</v-toolbar-title>
                 <v-spacer />
               </v-toolbar>
               <v-card-text>
                 <v-form>
-                  <v-text-field
-                    label="Login"
-                    name="login"
+                 <v-text-field
+                    label="First Name"
+                    name="fName"
                     prepend-icon="person"
                     type="text"
+                    v-model="user.fName"
+                  />
+              <v-text-field
+                    label="Last Name"
+                    name="lName"
+                    prepend-icon="person"
+                    type="text"
+                    v-model="user.lName"
+
+                  />
+                  <v-text-field
+                    label="Email"
+                    name="email"
+                    prepend-icon="person"
+                    type="email"
+                    v-model="user.email"
+                  />
+                <v-text-field
+                    label="Username"
+                    name="username"
+                    prepend-icon="person"
+                    type="text"
+                    v-model="user.username"
                   />
 
                   <v-text-field
@@ -38,12 +61,13 @@
                     name="password"
                     prepend-icon="lock"
                     type="password"
+                    v-model="user.password"
                   />
                 </v-form>
               </v-card-text>
               <v-card-actions>
                 <v-spacer />
-                <v-btn color="primary">Login</v-btn>
+                <v-btn color="primary" v-on:click="signUp">Sign Up</v-btn>
               </v-card-actions>
             </v-card>
           </v-col>
@@ -57,6 +81,31 @@
 export default {
   props: {
     source: String,
+  },
+  data() {
+    return {
+      user: {
+        fName: '',
+        lName: '',
+        email: '',
+        usernmae: '',
+        password: '',
+      },
+      error: false,
+      timeout: 2000,
+    };
+  },
+  methods: {
+    signUp() {
+      if (this.user.email !== '' && this.user.password !== '') {
+        this.$store.commit('users/signUp', { user: this.user, store: this.$store });
+        this.error = false;
+      } else {
+        this.$toastr.e(
+          'Email or Password cannot be empty string',
+        );
+      }
+    },
   },
 };
 </script>

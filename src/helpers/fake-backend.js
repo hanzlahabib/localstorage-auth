@@ -5,11 +5,12 @@
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable prefer-promise-reject-errors */
 // array in local storage for registered users
-const users = JSON.parse(localStorage.getItem('users')) || [];
+let users = JSON.parse(localStorage.getItem('users')) || [];
 
 export function configureFakeBackend() {
   const realFetch = window.fetch;
   window.fetch = function (url, opts) {
+    users = JSON.parse(localStorage.getItem('users')) || [];
     return new Promise((resolve, reject) => {
       // wrap in timeout to simulate server api call
       setTimeout(() => {
@@ -79,9 +80,9 @@ export function configureFakeBackend() {
           const newUser = JSON.parse(opts.body);
 
           // validation
-          const duplicateUser = users.filter((user) => user.username === newUser.username).length;
+          const duplicateUser = users.filter((user) => user.email === newUser.email).length;
           if (duplicateUser) {
-            reject(`Username "${newUser.username}" is already taken`);
+            reject(`Username "${newUser.email}" is already registered`);
             return;
           }
 

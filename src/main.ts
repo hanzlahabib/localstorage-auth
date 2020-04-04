@@ -1,12 +1,19 @@
 import Vue from 'vue';
 import Vuetify from 'vuetify';
+import VueToastr from 'vue-toastr';
 import App from './App.vue';
 import './registerServiceWorker';
 import router from './router';
 import store from './store';
+
+
 import { configureFakeBackend } from './helpers';
 
 configureFakeBackend();
+
+Vue.use(VueToastr, {
+  /* OverWrite Plugin Options if you need */
+});
 
 export default new Vuetify({
   icons: {
